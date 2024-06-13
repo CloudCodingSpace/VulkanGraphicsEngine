@@ -1,8 +1,10 @@
-#include <iostream>
+#include "vge/vge.hpp"
 
 int main(int argc, const char** argv) {
-    
-    
+    Vge* vge = new Vge(VGE_STD_WINDOW_WIDTH, VGE_STD_WINDOW_HEIGHT, "VulkanGraphicsEngine", "assets/icons/vk.png", false);    
+    vge->Run();
+    delete vge;
+
     std::cin.get();
-    return 0;
+    return EXIT_SUCCESS;
 }
