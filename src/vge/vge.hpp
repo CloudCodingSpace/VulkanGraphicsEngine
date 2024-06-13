@@ -1,6 +1,7 @@
 #pragma once
 
 #include "window/vge_window.hpp"
+#include "renderer/vge_renderer.hpp"
 
 #include <stdexcept>
 #include <iostream>
@@ -11,12 +12,13 @@
 class Vge
 {
 public:
-    Vge(int width, int height, const std::string &title, const std::string &iconPath, bool fullscreen);
+    Vge(int width, int height, const std::string &iconPath, bool fullscreen);
     ~Vge();
 
     void Run();
 private:
     VgeWindow* window;
+    VgeRenderer* renderer;
 
     void Update();
     void Render();

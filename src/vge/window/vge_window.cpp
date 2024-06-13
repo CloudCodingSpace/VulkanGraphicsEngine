@@ -33,6 +33,7 @@ void VgeWindow::createWindow()
     window = glfwCreateWindow(info->width, info->height, info->title.c_str(), info->fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
     if(window == nullptr)
         throw std::runtime_error("Failed to create window!");
+    glfwMakeContextCurrent(window);
     glfwSetWindowUserPointer(window, this);
 
     GLFWimage image;

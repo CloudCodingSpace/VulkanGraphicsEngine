@@ -1,6 +1,6 @@
 #include "vge.hpp"
 
-Vge::Vge(int width, int height, const std::string &title, const std::string &iconPath, bool fullscreen)
+Vge::Vge(int width, int height, const std::string &iconPath, bool fullscreen)
 {
     try {
         VgeWindowInfo info = {};
@@ -8,9 +8,11 @@ Vge::Vge(int width, int height, const std::string &title, const std::string &ico
         info.width = width;
         info.height = height;
         info.iconPath = iconPath;
-        info.title = title;
+        info.title = "VulkanGraphicsEngine";
 
         window = new VgeWindow(&info);
+
+        renderer = new VgeRenderer();
     } catch (std::exception& e) {
         std::cerr << "VGE :- " << e.what() << std::endl;
         std::cin.get();
@@ -40,10 +42,11 @@ void Vge::Run()
 
 void Vge::Update()
 {
+    renderer->Update();
     window->Update();
 }
 
 void Vge::Render()
 {
-
+    renderer->Render();
 }
