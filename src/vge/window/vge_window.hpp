@@ -23,6 +23,7 @@ public:
     void Show();
     void Update();
     bool IsCloseButtonPressed() { return glfwWindowShouldClose(window); }
+    GLFWwindow* GetWindowHND() { return window; }
 
 private:
     VgeWindowInfo *info;

@@ -1,15 +1,18 @@
 #include "vge_renderer_vk_init.hpp"
 
-VgeRendererVkInit::VgeRendererVkInit()
+VgeRendererVkInit::VgeRendererVkInit(GLFWwindow* window)
 {
-    ctx.window = glfwGetCurrentContext();
+    ctx.window = window;
 
     createInstance();
     createDebugger();
+    createSurface();
+    selectPhysicalDevice();
 }
 
 VgeRendererVkInit::~VgeRendererVkInit()
 {
+    destroySurface();
     destroyDebugger();
     destroyInstance();
 }
@@ -99,6 +102,75 @@ void VgeRendererVkInit::destroyDebugger()
     if(func) {
         func(ctx.instance, ctx.debugger, nullptr);
     }
+}
+
+void VgeRendererVkInit::createSurface()
+{
+    if(glfwCreateWindowSurface(ctx.instance, ctx.window, nullptr, &ctx.surface) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create surface!");
+    }
+}
+
+void VgeRendererVkInit::destroySurface()
+{
+    vkDestroySurfaceKHR(ctx.instance, ctx.surface, nullptr);
+}
+
+void VgeRendererVkInit::selectPhysicalDevice()
+{
+    uint32_t count = 0;
+    vkEnumeratePhysicalDevices(ctx.instance, &count, nullptr);
+    std::vector<VkPhysicalDevice> devices(count);
+    vkEnumeratePhysicalDevices(ctx.instance, &count, devices.data());
+
+    for(const auto& device : devices) {
+        if(IsDeviceUsable(ctx, device)) {
+            ctx.physicalDevice = device;
+        }
+    }
+
+    if(ctx.physicalDevice == VK_NULL_HANDLE) {
+        throw std::runtime_error("Failed to find any suitable device in the current PC!");
+    }
+}
+
+VgeRendererQueueFamilies VgeRendererVkInit::findQueueFamily(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device)
+{
+    uint32_t count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &count, nullptr);
+    std::vector<VkQueueFamilyProperties> props(count);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &count, props.data());
+
+    VgeRendererQueueFamilies families{};
+
+    int i = 0;
+    for(const VkQueueFamilyProperties prop : props) {
+        VkBool32 presentMode = VK_FALSE;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, ctx.surface, &presentMode);
+
+        if(prop.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            families.graphicsId = i;
+        }
+
+        if(presentMode) {
+            families.presentId = i;
+        }
+
+        if(families.IsComplete()) {
+            break;
+        }
+
+        i++;
+    }
+
+    return families;
+}
+
+bool VgeRendererVkInit::IsDeviceUsable(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device)
+{
+    VgeRendererQueueFamilies family = findQueueFamily(ctx, device);
+
+    return family.IsComplete();
 }
 
 std::vector<const char *> VgeRendererVkInit::GetRequiredExts()

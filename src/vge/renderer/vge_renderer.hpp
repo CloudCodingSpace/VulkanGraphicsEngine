@@ -5,7 +5,7 @@
 class VgeRenderer
 {
 public:
-    VgeRenderer();
+    VgeRenderer(GLFWwindow* window);
     ~VgeRenderer();
 
     void Update();

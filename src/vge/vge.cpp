@@ -12,7 +12,7 @@ Vge::Vge(int width, int height, const std::string &iconPath, bool fullscreen)
 
         window = new VgeWindow(&info);
 
-        renderer = new VgeRenderer();
+        renderer = new VgeRenderer(window->GetWindowHND());
     } catch (std::exception& e) {
         std::cerr << "VGE :- " << e.what() << std::endl;
         std::cin.get();

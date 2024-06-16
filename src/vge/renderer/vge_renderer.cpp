@@ -1,8 +1,8 @@
 #include "vge_renderer.hpp"
 
-VgeRenderer::VgeRenderer()
+VgeRenderer::VgeRenderer(GLFWwindow* window)
 {
-    init = new VgeRendererVkInit();
+    init = new VgeRendererVkInit(window);
 }
 
 VgeRenderer::~VgeRenderer()
