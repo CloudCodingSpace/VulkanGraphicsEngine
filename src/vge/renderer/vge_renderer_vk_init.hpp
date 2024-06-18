@@ -7,28 +7,9 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
+#include <set>
 
-struct VgeRendererQueueFamilies
-{
-    int graphicsId = -1;
-    int presentId = -1;
-
-    bool IsComplete() {
-        return graphicsId != -1 && presentId != -1;
-    }
-};
-
-struct VgeRendererVkInitCtx
-{
-    GLFWwindow* window;
-    VkInstance instance;
-    VkDebugUtilsMessengerEXT debugger;
-    VkSurfaceKHR surface;
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
-    VgeRendererQueueFamilies queueFamilies;
-};
+#include "vge_renderer_structs.hpp"
 
 class VgeRendererVkInit
 {
@@ -36,6 +17,8 @@ public:
     VgeRendererVkInit(GLFWwindow* window);
     ~VgeRendererVkInit();
 
+
+    VgeRendererVkScSupportDetails GetScSupportDetails();
     const VgeRendererVkInitCtx* GetCtx() { return reinterpret_cast<const VgeRendererVkInitCtx*>(&ctx); }
 private:
     VgeRendererVkInitCtx ctx;
@@ -47,6 +30,9 @@ private:
 
     const std::vector<const char*> layers = {
         "VK_LAYER_KHRONOS_validation"
+    };
+    const std::vector<const char*> devExts = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
     void createInstance();
@@ -60,11 +46,16 @@ private:
     void destroySurface();
 
     void selectPhysicalDevice();
+    void createLogicalDevice();
+    void getRequiredQueues();
+    void destroyLogicalDevice();
 
-    static VgeRendererQueueFamilies findQueueFamily(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device);
-    static bool IsDeviceUsable(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device);
-    static std::vector<const char*> GetRequiredExts();
-    static void FillDebuggerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& info);
+    bool checkDeviceExtensions(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device);
+    VgeRendererVkScSupportDetails getScSupportDetails(VkPhysicalDevice device);
+    VgeRendererQueueFamilies findQueueFamily(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device);
+    bool IsDeviceUsable(VgeRendererVkInitCtx& ctx, VkPhysicalDevice device);
+    std::vector<const char*> GetRequiredExts();
+    void FillDebuggerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& info);
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
             VkDebugUtilsMessageTypeFlagsEXT messageType,
