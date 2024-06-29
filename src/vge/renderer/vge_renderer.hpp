@@ -1,15 +1,17 @@
 #pragma once
 
+#include <memory>
+
 #include "vge_renderer_vk_init.hpp"
+#include "../window/vge_window.hpp"
 
 class VgeRenderer
 {
 public:
-    VgeRenderer(GLFWwindow* window);
-    ~VgeRenderer();
+    VgeRenderer(std::shared_ptr<VgeWindow>& window);
 
     void Update();
     void Render();
 private:
-    VgeRendererVkInit* init;
+    std::shared_ptr<VgeRendererVkInit> init;
 };

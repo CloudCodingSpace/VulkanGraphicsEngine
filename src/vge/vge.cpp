@@ -10,19 +10,14 @@ Vge::Vge(int width, int height, const std::string &iconPath, bool fullscreen)
         info.iconPath = iconPath;
         info.title = "VulkanGraphicsEngine";
 
-        window = new VgeWindow(&info);
+        window = std::make_shared<VgeWindow>(&info);
 
-        renderer = new VgeRenderer(window->GetWindowHND());
+        renderer = std::make_shared<VgeRenderer>(window);
     } catch (std::exception& e) {
         std::cerr << "VGE :- " << e.what() << std::endl;
         std::cin.get();
         std::exit(EXIT_FAILURE);
     }
-}
-
-Vge::~Vge()
-{
-    delete window;
 }
 
 void Vge::Run()

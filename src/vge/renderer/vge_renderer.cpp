@@ -1,13 +1,8 @@
 #include "vge_renderer.hpp"
 
-VgeRenderer::VgeRenderer(GLFWwindow* window)
+VgeRenderer::VgeRenderer(std::shared_ptr<VgeWindow>& window)
 {
-    init = new VgeRendererVkInit(window);
-}
-
-VgeRenderer::~VgeRenderer()
-{
-    delete init;
+    init = std::make_shared<VgeRendererVkInit>(window->GetWindowHND());
 }
 
 void VgeRenderer::Render()
