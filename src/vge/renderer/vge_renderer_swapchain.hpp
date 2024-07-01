@@ -17,7 +17,7 @@
 class VgeRendererSwapchain
 {
 public:
-    VgeRendererSwapchain(std::shared_ptr<VgeRendererVkInit>& init, std::shared_ptr<VgeWindow>& window);
+    VgeRendererSwapchain(std::shared_ptr<VgeRendererVkInit>& init, GLFWwindow* window);
     ~VgeRendererSwapchain();
 
     VkSwapchainKHR GetHandle() { return m_Hnd; }
@@ -43,7 +43,7 @@ private:
 
     const VgeRendererVkInitCtx* u_Init;
 
-    std::shared_ptr<VgeWindow> u_Window;
+    GLFWwindow* u_Window;
     VgeRendererVkScSupportDetails m_Details;
 private:
     void CreateSwapchain();

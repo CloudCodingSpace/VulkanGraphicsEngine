@@ -9,7 +9,7 @@
 class VgeRenderer
 {
 public:
-    VgeRenderer(std::shared_ptr<VgeWindow>& window);
+    VgeRenderer(GLFWwindow* window);
 
     void Update();
     void Render();

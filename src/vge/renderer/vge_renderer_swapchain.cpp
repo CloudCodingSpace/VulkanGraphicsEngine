@@ -1,6 +1,6 @@
 #include "vge_renderer_swapchain.hpp"
 
-VgeRendererSwapchain::VgeRendererSwapchain(std::shared_ptr<VgeRendererVkInit> &init, std::shared_ptr<VgeWindow> &window)
+VgeRendererSwapchain::VgeRendererSwapchain(std::shared_ptr<VgeRendererVkInit> &init, GLFWwindow* window)
 {
     u_Init = init->GetCtx();
     u_Window = window;
@@ -21,12 +21,11 @@ VgeRendererSwapchain::~VgeRendererSwapchain()
 
 void VgeRendererSwapchain::Recreate()
 {
-    auto win = u_Window->GetWindowHND();
     int width, height;
-    glfwGetFramebufferSize(win, &width, &height);
+    glfwGetFramebufferSize(u_Window, &width, &height);
     while(width == 0 || height == 0)
     {
-        glfwGetFramebufferSize(win, &width, &height);
+        glfwGetFramebufferSize(u_Window, &width, &height);
         glfwWaitEvents();
     }
 
@@ -224,7 +223,7 @@ VkExtent2D VgeRendererSwapchain::SelectExtent(const VkSurfaceCapabilitiesKHR &ca
     else 
     {
         int width, height;
-        glfwGetFramebufferSize(u_Window->GetWindowHND(), &width, &height);
+        glfwGetFramebufferSize(u_Window, &width, &height);
 
         VkExtent2D actualExtent = {
             static_cast<uint32_t>(width),
